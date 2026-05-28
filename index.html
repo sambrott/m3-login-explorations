@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M3 Login Explorations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="is-framed is-light-cards is-active-panel-dark">
+    <div class="approach-nav-float">
+      <button
+        class="approach-nav-float__toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="approach-nav-panel"
+        aria-label="Open layout explorations menu"
+      >
+        <img src="assets/logo-icon.png" alt="" />
+        <span class="approach-nav-float__current">05 · Accordion · Horizontal · Left</span>
+        <span class="approach-nav-float__icon" aria-hidden="true"></span>
+      </button>
+      <div class="approach-nav-panel" id="approach-nav-panel" aria-hidden="true">
+        <p class="approach-nav-panel__label">Compare approaches</p>
+        <ul class="approach-nav-panel__list">
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="accordion-left" type="button">
+              <strong>01 · Accordion · Left</strong>
+              <small>Login left, accordion cards cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="accordion-right" type="button">
+              <strong>02 · Accordion · Right</strong>
+              <small>Login right, accordion cards cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="panels-left" type="button">
+              <strong>03 · Panels · Left</strong>
+              <small>Login left, color columns cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="panels-right" type="button">
+              <strong>04 · Panels · Right</strong>
+              <small>Login right, color columns cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn is-active" data-approach="accordion-h-left" type="button">
+              <strong>05 · Accordion · Horizontal · Left</strong>
+              <small>Login left, horizontal card strips cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="accordion-h-right" type="button">
+              <strong>06 · Accordion · Horizontal · Right</strong>
+              <small>Login right, horizontal card strips cycle on hover</small>
+            </button>
+          </li>
+        </ul>
+        <hr class="approach-nav-panel__sep" />
+
+        <p class="approach-nav-panel__label">Card theme</p>
+        <div class="approach-nav-panel__group">
+          <div class="frame-toggle-row light-cards-toggle-row">
+            <span class="frame-toggle-label">Light card theme</span>
+            <button
+              class="frame-toggle-switch light-cards-toggle-switch"
+              type="button"
+              aria-pressed="true"
+              aria-label="Toggle light card theme"
+            ></button>
+          </div>
+          <div class="frame-toggle-row active-panel-dark-toggle-row">
+            <span class="frame-toggle-label">Dark active panel</span>
+            <button
+              class="frame-toggle-switch active-panel-dark-toggle-switch"
+              type="button"
+              aria-pressed="true"
+              aria-label="Toggle dark styling on the expanded panel"
+            ></button>
+          </div>
+          <div class="frame-toggle-row auto-cycle-toggle-row">
+            <span class="frame-toggle-label">Auto cycle panels</span>
+            <button
+              class="frame-toggle-switch auto-cycle-toggle-switch"
+              type="button"
+              aria-pressed="false"
+              aria-label="Toggle automatic panel cycling"
+            ></button>
+          </div>
+        </div>
+
+        <hr class="approach-nav-panel__sep" />
+        <p class="approach-nav-panel__label">Layout frame</p>
+        <div class="approach-nav-panel__group approach-nav-panel__group--framed">
+          <div class="frame-toggle-row frame-mode-toggle-row">
+            <span class="frame-toggle-label">Framed container</span>
+            <button
+              class="frame-toggle-switch frame-mode-toggle-switch"
+              type="button"
+              aria-pressed="true"
+              aria-label="Toggle framed container mode"
+            ></button>
+          </div>
+          <div class="frame-inset-row">
+            <label class="frame-toggle-label" for="frame-size-slider">Frame size</label>
+            <input
+              id="frame-size-slider"
+              class="frame-inset-slider"
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              value="4"
+              aria-valuemin="0"
+              aria-valuemax="10"
+              aria-valuenow="4"
+              aria-label="Adjust outer size of framed container"
+            />
+            <span class="frame-size-value" aria-hidden="true">4</span>
+          </div>
+          <div class="frame-inset-row">
+            <label class="frame-toggle-label" for="frame-inset-slider">Card inset</label>
+            <input
+              id="frame-inset-slider"
+              class="frame-inset-slider"
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              value="4"
+              aria-valuemin="0"
+              aria-valuemax="10"
+              aria-valuenow="4"
+              aria-label="Adjust inset around card container"
+            />
+            <span class="frame-inset-value" aria-hidden="true">4</span>
+          </div>
+        </div>
+
+        <hr class="approach-nav-panel__sep" />
+        <button class="approach-nav-panel__copy" type="button">Copy all values</button>
+      </div>
+    </div>
+
+    <main class="approach-stage">
+      <section class="approach is-active" id="approach-accordion-left" aria-label="Accordion with login on left">
+        <div class="login-layout">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+              <img class="login-panel__logo" src="assets/logo-horizontal.png" alt="Make Me Modern Sites" />
+<form>
+                <div class="field">
+                  <label for="al-email">Username or email</label>
+                  <input id="al-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="al-password">Password</label>
+                  <input id="al-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div class="showcase accordion-showcase" data-cycling=".accordion-panel" data-interval="4500" data-render="accordion"></div>
+        </div>
+      </section>
+
+      <section class="approach" id="approach-accordion-right" aria-label="Accordion with login on right">
+        <div class="login-layout login-layout--right">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+              <img class="login-panel__logo" src="assets/logo-horizontal.png" alt="Make Me Modern Sites" />
+<form>
+                <div class="field">
+                  <label for="ar-email">Username or email</label>
+                  <input id="ar-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="ar-password">Password</label>
+                  <input id="ar-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div class="showcase accordion-showcase" data-cycling=".accordion-panel" data-interval="4500" data-render="accordion"></div>
+        </div>
+      </section>
+
+      <section class="approach" id="approach-panels-left" aria-label="Color panels with login on left">
+        <div class="login-layout">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+              <img class="login-panel__logo" src="assets/logo-horizontal.png" alt="Make Me Modern Sites" />
+<form>
+                <div class="field">
+                  <label for="pl-email">Username or email</label>
+                  <input id="pl-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="pl-password">Password</label>
+                  <input id="pl-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div class="showcase panel-showcase" data-cycling=".color-panel" data-interval="4500" data-render="panels"></div>
+        </div>
+      </section>
+
+      <section class="approach" id="approach-panels-right" aria-label="Color panels with login on right">
+        <div class="login-layout login-layout--right">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+              <img class="login-panel__logo" src="assets/logo-horizontal.png" alt="Make Me Modern Sites" />
+<form>
+                <div class="field">
+                  <label for="pr-email">Username or email</label>
+                  <input id="pr-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="pr-password">Password</label>
+                  <input id="pr-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div class="showcase panel-showcase" data-cycling=".color-panel" data-interval="4500" data-render="panels"></div>
+        </div>
+      </section>
+
+      <section class="approach" id="approach-accordion-h-left" aria-label="Horizontal accordion with login on left">
+        <img class="approach__logo" src="assets/m3-mark.png" alt="M3" width="56" height="56" />
+        <div class="login-layout">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+<form>
+                <div class="field">
+                  <label for="ahl-email">Username or email</label>
+                  <input id="ahl-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="ahl-password">Password</label>
+                  <input id="ahl-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div
+            class="showcase accordion-showcase accordion-showcase--horizontal"
+            data-cycling=".accordion-panel"
+            data-interval="4500"
+            data-render="accordion"
+          ></div>
+        </div>
+      </section>
+
+      <section class="approach" id="approach-accordion-h-right" aria-label="Horizontal accordion with login on right">
+        <div class="login-layout login-layout--right">
+          <aside class="login-panel">
+            <div class="login-panel__inner">
+              <img class="login-panel__logo" src="assets/logo-horizontal.png" alt="Make Me Modern Sites" />
+<form>
+                <div class="field">
+                  <label for="ahr-email">Username or email</label>
+                  <input id="ahr-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="ahr-password">Password</label>
+                  <input id="ahr-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div
+            class="showcase accordion-showcase accordion-showcase--horizontal"
+            data-cycling=".accordion-panel"
+            data-interval="4500"
+            data-render="accordion"
+          ></div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.108.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="features.js"></script>
+    <script src="heroes/earth-lib.js"></script>
+    <script src="heroes/m3pixel-globe.js"></script>
+    <script src="heroes/m3send-lamp.js"></script>
+    <script src="heroes/m3llm-chat.js"></script>
+    <script src="heroes/m3ads-google.js"></script>
+    <script src="heroes/m3marketing-network.js"></script>
+    <script src="hero-engine.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
