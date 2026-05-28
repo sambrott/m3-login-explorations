@@ -1587,12 +1587,12 @@ body.is-framed .approach__logo {
   color: #414042;
 }
 
-.accordion-showcase__title-mark {
-  display: inline-block;
-  height: 1.05em;
-  width: auto;
-  vertical-align: -0.14em;
-  margin: 0 0.04em;
+.accordion-showcase__title-accent {
+  background: linear-gradient(90deg, #e9612a 0%, #f89b62 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 body.is-light-cards .accordion-showcase--horizontal .accordion-showcase__header {
@@ -1653,13 +1653,6 @@ body:not(.is-light-cards) .accordion-showcase--horizontal .accordion-panel:not(.
   justify-content: flex-start;
   align-items: center;
   padding: 0 clamp(1.25rem, 2.5vw, 2rem);
-}
-
-.accordion-showcase--horizontal .accordion-panel:not(.is-active)[data-product="llm"] .accordion-panel__tab {
-  text-transform: none;
-  letter-spacing: -0.02em;
-  font-size: clamp(0.88rem, 1.35vw, 1.05rem);
-  font-weight: 600;
 }
 
 .accordion-showcase--horizontal .accordion-panel__content {

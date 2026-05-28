@@ -113,14 +113,7 @@ function renderAccordionShowcase(root) {
     root.innerHTML = `
       <header class="accordion-showcase__header">
         <h2 class="accordion-showcase__title">
-          What's New With
-          <img
-            class="accordion-showcase__title-mark"
-            src="assets/m3-mark.png"
-            alt="M3"
-            width="50"
-            height="35"
-          />?
+          What's New With <span class="accordion-showcase__title-accent">m3</span>?
         </h2>
       </header>
       <div class="accordion-showcase__panels">${cards}</div>
