@@ -1803,7 +1803,7 @@ body.is-light-cards.is-active-panel-dark .accordion-showcase--horizontal .accord
 
 body.is-light-cards .accordion-showcase--horizontal .feature-hero__chat-mount {
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 body.is-light-cards .accordion-showcase--horizontal .m3-chat-demo__window {
@@ -1854,50 +1854,10 @@ body.is-light-cards .accordion-showcase--horizontal .accordion-panel.is-active[d
   transform: none;
 }
 
-.accordion-showcase--horizontal .feature-hero__chat-mount {
-  align-items: center;
-  justify-content: center;
-  padding: clamp(0.45rem, 1.2vw, 0.75rem);
-}
-
-.accordion-showcase--horizontal .m3-chat-demo {
-  width: min(100%, 10.5rem);
-  max-height: 100%;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__window {
-  height: 10.75rem;
-  min-height: 10.75rem;
-  max-height: 10.75rem;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__header {
-  padding: 0.55rem 0.7rem;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__title {
-  font-size: 0.72rem;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__body {
-  padding: 0.65rem 0.7rem 0.4rem;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__bubble {
-  padding: 0.5rem 0.62rem;
-  font-size: 0.64rem;
-}
-
-.accordion-showcase--horizontal .m3-chat-demo__composer {
-  margin: 0 0.7rem 0.7rem;
-  padding: 0.48rem 0.45rem 0.48rem 0.65rem;
-}
-
 .accordion-showcase--horizontal .accordion-panel.is-active[data-product="llm"] .m3-chat-demo,
 body.is-light-cards .accordion-showcase--horizontal .accordion-panel.is-active[data-product="llm"] .m3-chat-demo {
-  transform: translateY(var(--llm-chat-offset-y)) scale(0.76);
+  transform: translateY(0) scale(0.82);
   transform-origin: center center;
-  opacity: 1;
 }
 
 .accordion-showcase--horizontal .accordion-panel:not(.is-active)[data-product="m3pixel"] .feature-hero__earth.earth-container > canvas {
@@ -1922,8 +1882,13 @@ body.is-light-cards .accordion-showcase--horizontal .accordion-panel.is-active[d
 }
 
 .accordion-showcase--horizontal .accordion-panel:not(.is-active)[data-product="llm"] .m3-chat-demo {
-  transform: translateY(var(--llm-chat-offset-y)) scale(0.68);
+  transform: translateY(var(--llm-chat-offset-y)) scale(0.864);
   opacity: 0.88;
+}
+
+.accordion-showcase--horizontal .accordion-panel.is-active[data-product="llm"] .m3-chat-demo {
+  transform: translateY(var(--llm-chat-offset-y)) scale(0.936);
+  opacity: 1;
 }
 
 /* Approach 2: Expanding color panels */
