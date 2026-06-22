@@ -3,7 +3,7 @@
   let activeApproachId = null;
 
   function isHeroCardActive(container) {
-    const card = container.closest(".accordion-panel, .color-panel");
+    const card = container.closest(".accordion-panel, .color-panel, .carousel-slide");
     return card?.classList.contains("is-active");
   }
 
@@ -24,6 +24,11 @@
 
     engine.setVisible?.(true);
     engine.resize?.();
+
+    if (document.body.classList.contains("is-animations-muted")) {
+      engine.pause?.();
+      return;
+    }
 
     if (cardActive) {
       engine.resume?.();
@@ -86,7 +91,7 @@
       }
     });
 
-    document.querySelectorAll(".approach .accordion-panel__hero[data-hero], .approach .color-panel__hero[data-hero]").forEach((container) => {
+    document.querySelectorAll(".approach .accordion-panel__hero[data-hero], .approach .color-panel__hero[data-hero], .approach .carousel-slide__hero[data-hero]").forEach((container) => {
       const owner = container.closest(".approach");
       const isActive = owner && owner.id === `approach-${approachId}`;
 
@@ -105,7 +110,7 @@
   }
 
   window.addEventListener("m3:cards-changed", () => {
-    document.querySelectorAll(".approach .accordion-panel__hero[data-hero], .approach .color-panel__hero[data-hero]").forEach((container) => {
+    document.querySelectorAll(".approach .accordion-panel__hero[data-hero], .approach .color-panel__hero[data-hero], .approach .carousel-slide__hero[data-hero]").forEach((container) => {
       if (!isHeroApproachActive(container)) return;
       if (!mounted.has(container) && container.dataset.mounted !== "pending") {
         mountHero(container);
@@ -118,5 +123,18 @@
     });
   });
 
-  window.M3HeroEngine = { syncApproach };
+  function syncAnimationsMuted(isMuted) {
+    mounted.forEach((engine, container) => {
+      if (!isHeroApproachActive(container)) return;
+
+      if (isMuted) {
+        engine.pause?.();
+        return;
+      }
+
+      syncHeroState(container, engine);
+    });
+  }
+
+  window.M3HeroEngine = { syncApproach, syncAnimationsMuted };
 })();

@@ -152,13 +152,23 @@
     return Boolean(container.closest(".accordion-showcase--horizontal"));
   }
 
+  function isCarouselCard(container) {
+    return Boolean(container.closest(".carousel-showcase"));
+  }
+
   function getIntroAnchor(container) {
+    if (isCarouselCard(container)) {
+      return { left: "50%", top: "46%" };
+    }
     return isHorizontalCard(container)
       ? { left: "83.333%", top: "44%" }
       : { left: "50%", top: "44%" };
   }
 
   function getBrowserOffscreen(container) {
+    if (isCarouselCard(container)) {
+      return { xPercent: -118, opacity: 0.96 };
+    }
     return isHorizontalCard(container)
       ? { xPercent: 118, opacity: 0.96 }
       : { xPercent: -118, opacity: 0.96 };
@@ -184,6 +194,10 @@
     const slotGlowBlob = container.querySelector(".m3-ads-demo__slot-glow-blob");
 
     const INTRO_SCALE = 2.55;
+
+    function getIntroScale() {
+      return isCarouselCard(container) ? 1.35 : INTRO_SCALE;
+    }
     let dockOffset = { x: 0, y: 0 };
     let master = null;
     let cancelled = false;
@@ -207,7 +221,7 @@
         top: anchor.top,
         x: 0,
         y: 0,
-        scale: INTRO_SCALE,
+        scale: getIntroScale(),
         opacity: 1,
       });
       gsap.set(boringAd, { opacity: 1 });
@@ -285,7 +299,7 @@
           {
             x: 0,
             y: 0,
-            scale: INTRO_SCALE,
+            scale: getIntroScale(),
             opacity: 1,
             duration: 0.72,
             ease: "power2.inOut",
@@ -337,7 +351,7 @@
         {
           x: 0,
           y: 0,
-          scale: INTRO_SCALE,
+          scale: getIntroScale(),
           opacity: 1,
           duration: 0.72,
           ease: "power2.inOut",

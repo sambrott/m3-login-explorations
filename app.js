@@ -75,6 +75,11 @@ function activateApproach(target) {
 
   activeApproach = target;
   window.M3HeroEngine?.syncApproach(target);
+  syncCarouselSplitControls(isCarouselApproach(target));
+}
+
+function isCarouselApproach(approach = activeApproach) {
+  return approach === "carousel-left" || approach === "carousel-right";
 }
 
 navButtons.forEach((button) => {
@@ -120,6 +125,10 @@ function setupCyclingCards(root, itemSelector, interval = 4500) {
     window.dispatchEvent(new CustomEvent("m3:cards-changed"));
   }
 
+  function getIndex() {
+    return index;
+  }
+
   function stop() {
     clearInterval(timer);
     timer = null;
@@ -128,6 +137,7 @@ function setupCyclingCards(root, itemSelector, interval = 4500) {
   function start() {
     stop();
     if (!document.body.classList.contains("is-auto-cycling")) return;
+    if (document.body.classList.contains("is-animations-muted")) return;
     if (paused || hoveredIndex !== null) return;
     timer = setInterval(() => setActive(index + 1), interval);
   }
@@ -206,7 +216,72 @@ function setupCyclingCards(root, itemSelector, interval = 4500) {
     });
   });
 
-  return { setActive, start, stop, pause, resume: scheduleResume };
+  return { setActive, getIndex, start, stop, pause, resume: scheduleResume };
+}
+
+function setupCarouselControls(root) {
+  const approach = root.closest(".approach");
+  if (!approach) return;
+
+  const slides = [...root.querySelectorAll(".carousel-slide")];
+  const prevBtn = root.querySelector(".carousel-showcase__arrow--prev");
+  const nextBtn = root.querySelector(".carousel-showcase__arrow--next");
+  const dots = [...root.querySelectorAll(".carousel-showcase__dot")];
+
+  function syncCarouselUi() {
+    const activeIndex = Math.max(
+      0,
+      slides.findIndex((slide) => slide.classList.contains("is-active"))
+    );
+
+    slides.forEach((slide, i) => {
+      slide.setAttribute("aria-hidden", String(i !== activeIndex));
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === activeIndex);
+      dot.setAttribute("aria-selected", String(i === activeIndex));
+    });
+  }
+
+  function navigate(delta) {
+    const cycler = cyclers.get(approach.id);
+    if (!cycler) return;
+    cycler.setActive(cycler.getIndex() + delta);
+  }
+
+  prevBtn?.addEventListener("click", () => navigate(-1));
+  nextBtn?.addEventListener("click", () => navigate(1));
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const cycler = cyclers.get(approach.id);
+      if (!cycler) return;
+      cycler.setActive(Number(dot.dataset.slideIndex));
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!approach.classList.contains("is-active")) return;
+    if (event.target.closest("input, textarea, select, button:not(.carousel-showcase__arrow):not(.carousel-showcase__dot)")) {
+      return;
+    }
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      navigate(-1);
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      navigate(1);
+    }
+  });
+
+  window.addEventListener("m3:cards-changed", () => {
+    if (!approach.classList.contains("is-active")) return;
+    syncCarouselUi();
+  });
+
+  syncCarouselUi();
 }
 
 document.querySelectorAll("[data-cycling]").forEach((root) => {
@@ -217,30 +292,35 @@ document.querySelectorAll("[data-cycling]").forEach((root) => {
   if (cycler) cyclers.set(approach.id, cycler);
 });
 
+document.querySelectorAll("[data-render='carousel']").forEach((root) => {
+  setupCarouselControls(root);
+});
+
 const frameToggle = document.querySelector(".frame-mode-toggle-switch");
 const lightCardsToggle = document.querySelector(".light-cards-toggle-switch");
 const activePanelDarkToggle = document.querySelector(".active-panel-dark-toggle-switch");
 const activePanelDarkRow = document.querySelector(".active-panel-dark-toggle-row");
 const autoCycleToggle = document.querySelector(".auto-cycle-toggle-switch");
+const muteAnimationsToggle = document.querySelector(".mute-animations-toggle-switch");
 const frameSizeSlider = document.getElementById("frame-size-slider");
 const frameSizeValue = document.querySelector(".frame-size-value");
 const frameInsetSlider = document.getElementById("frame-inset-slider");
 const frameInsetValue = document.querySelector(".frame-inset-value");
+const carouselSplitSlider = document.getElementById("carousel-split-slider");
+const carouselSplitValue = document.querySelector(".carousel-split-value");
 const copyConfigButton = document.querySelector(".approach-nav-panel__copy");
 
 const FRAME_OUTER_MAX_PX = 160;
 const FRAME_INSET_MAX_PX = 56;
-const CHAT_OFFSET_CENTER_LEVEL = 5;
-const CHAT_OFFSET_BASE_PERCENT = -8;
-const CHAT_OFFSET_STEP_PERCENT = 8;
 const DEFAULT_FRAMED = true;
 const DEFAULT_LIGHT_CARDS = true;
 const DEFAULT_ACTIVE_PANEL_DARK = true;
 const DEFAULT_AUTO_CYCLE = false;
-const DEFAULT_APPROACH = "accordion-h-left";
+const DEFAULT_ANIMATIONS_MUTED = false;
+const DEFAULT_APPROACH = "carousel-right";
 const DEFAULT_FRAME_SIZE_LEVEL = 4;
-const DEFAULT_FRAME_INSET_LEVEL = 4;
-const DEFAULT_CHAT_OFFSET_LEVEL = 4;
+const DEFAULT_FRAME_INSET_LEVEL = 0;
+const DEFAULT_CAROUSEL_SPLIT_LEVEL = 5;
 
 function scheduleHeroResize() {
   window.setTimeout(() => {
@@ -282,22 +362,41 @@ function applyFrameInset(level) {
   scheduleHeroResize();
 }
 
-function getChatOffsetLevel() {
-  return DEFAULT_CHAT_OFFSET_LEVEL;
+function getCarouselSplitLevel() {
+  return Math.max(0, Math.min(10, Number(carouselSplitSlider?.value) || 0));
 }
 
-function getChatOffsetPercent(level = getChatOffsetLevel()) {
+function getCarouselSplitShares(level = getCarouselSplitLevel()) {
   const resolved = Math.max(0, Math.min(10, Number(level) || 0));
-  const percent =
-    CHAT_OFFSET_BASE_PERCENT + (CHAT_OFFSET_CENTER_LEVEL - resolved) * CHAT_OFFSET_STEP_PERCENT;
-  return Math.round(percent * 10) / 10;
+  const showcaseShare = 33.3333 + (resolved / 10) * 33.3334;
+  const loginShare = 100 - showcaseShare;
+
+  return {
+    showcaseShare: Math.round(showcaseShare * 1000) / 1000,
+    loginShare: Math.round(loginShare * 1000) / 1000,
+  };
 }
 
-function applyChatOffset(level = DEFAULT_CHAT_OFFSET_LEVEL) {
+function applyCarouselSplit(level) {
   const resolved = Math.max(0, Math.min(10, Number(level) || 0));
-  const percent = getChatOffsetPercent(resolved);
-  document.documentElement.style.setProperty("--llm-chat-offset-y", `${percent}%`);
+  const { showcaseShare, loginShare } = getCarouselSplitShares(resolved);
+  const gridColumns = `minmax(0, ${loginShare}%) minmax(0, ${showcaseShare}%)`;
+  const gridColumnsRight = `minmax(0, ${showcaseShare}%) minmax(0, ${loginShare}%)`;
+
+  document.documentElement.style.setProperty("--carousel-showcase-share", `${showcaseShare}%`);
+  document.documentElement.style.setProperty("--carousel-login-share", `${loginShare}%`);
+  document.documentElement.style.setProperty("--carousel-grid-columns", gridColumns);
+  document.documentElement.style.setProperty("--carousel-grid-columns-right", gridColumnsRight);
+  carouselSplitSlider?.setAttribute("aria-valuenow", String(resolved));
+  if (carouselSplitValue) carouselSplitValue.textContent = String(resolved);
   scheduleHeroResize();
+}
+
+function syncCarouselSplitControls(isCarousel = isCarouselApproach()) {
+  document.querySelectorAll(".carousel-split-controls").forEach((element) => {
+    element.hidden = !isCarousel;
+  });
+  carouselSplitSlider?.toggleAttribute("disabled", !isCarousel);
 }
 
 async function copyText(text) {
@@ -333,12 +432,13 @@ function buildExplorationConfig() {
   const sizePx = getFrameSizePx(sizeLevel);
   const insetLevel = getFrameInsetLevel();
   const insetPx = getFrameInsetPx(insetLevel);
-  const chatOffsetLevel = getChatOffsetLevel();
-  const chatOffsetPercent = getChatOffsetPercent(chatOffsetLevel);
+  const carouselSplitLevel = getCarouselSplitLevel();
+  const carouselSplit = getCarouselSplitShares(carouselSplitLevel);
   const isFramed = document.body.classList.contains("is-framed");
   const lightCards = document.body.classList.contains("is-light-cards");
   const activePanelDark = document.body.classList.contains("is-active-panel-dark");
   const autoCycle = document.body.classList.contains("is-auto-cycling");
+  const animationsMuted = document.body.classList.contains("is-animations-muted");
   const activeButton = document.querySelector(".approach-nav-panel__btn.is-active");
   const approachLabel = activeButton?.querySelector("strong")?.textContent?.trim() ?? activeApproach;
 
@@ -349,6 +449,7 @@ function buildExplorationConfig() {
     lightCards,
     activePanelDark,
     autoCycle,
+    animationsMuted,
     frameSize: {
       level: sizeLevel,
       px: sizePx,
@@ -359,17 +460,18 @@ function buildExplorationConfig() {
       px: insetPx,
       maxPx: FRAME_INSET_MAX_PX,
     },
-    chatOffset: {
-      level: chatOffsetLevel,
-      translateY: `${chatOffsetPercent}%`,
-      centerLevel: CHAT_OFFSET_CENTER_LEVEL,
-      stepPercent: CHAT_OFFSET_STEP_PERCENT,
-      basePercent: CHAT_OFFSET_BASE_PERCENT,
+    carouselSplit: {
+      level: carouselSplitLevel,
+      showcaseShare: carouselSplit.showcaseShare,
+      loginShare: carouselSplit.loginShare,
     },
     cssVariables: {
       "--frame-outer-user": `${sizePx}px`,
       "--frame-inner-user": `${insetPx}px`,
-      "--llm-chat-offset-y": `${chatOffsetPercent}%`,
+      "--carousel-showcase-share": `${carouselSplit.showcaseShare}%`,
+      "--carousel-login-share": `${carouselSplit.loginShare}%`,
+      "--carousel-grid-columns": `minmax(0, ${carouselSplit.loginShare}%) minmax(0, ${carouselSplit.showcaseShare}%)`,
+      "--carousel-grid-columns-right": `minmax(0, ${carouselSplit.showcaseShare}%) minmax(0, ${carouselSplit.loginShare}%)`,
       "--frame-inner-radius": "1.25rem",
       "--frame-radius": "1.75rem",
       "--approach-dot-size": "10px",
@@ -380,6 +482,7 @@ function buildExplorationConfig() {
         ...(lightCards ? ["is-light-cards"] : []),
         ...(activePanelDark ? ["is-active-panel-dark"] : []),
         ...(autoCycle ? ["is-auto-cycling"] : []),
+        ...(animationsMuted ? ["is-animations-muted"] : []),
       ],
     },
   };
@@ -389,7 +492,10 @@ function formatExplorationConfig(config) {
   const cssBlock = `:root {
   --frame-outer-user: ${config.cssVariables["--frame-outer-user"]};
   --frame-inner-user: ${config.cssVariables["--frame-inner-user"]};
-  --llm-chat-offset-y: ${config.cssVariables["--llm-chat-offset-y"]};
+  --carousel-showcase-share: ${config.cssVariables["--carousel-showcase-share"]};
+  --carousel-login-share: ${config.cssVariables["--carousel-login-share"]};
+  --carousel-grid-columns: ${config.cssVariables["--carousel-grid-columns"]};
+  --carousel-grid-columns-right: ${config.cssVariables["--carousel-grid-columns-right"]};
   --frame-inner-radius: ${config.cssVariables["--frame-inner-radius"]};
   --frame-radius: ${config.cssVariables["--frame-radius"]};
   --approach-dot-size: ${config.cssVariables["--approach-dot-size"]};
@@ -401,14 +507,18 @@ document.body.classList.toggle("is-framed", ${config.framed});
 document.body.classList.toggle("is-light-cards", ${config.lightCards});
 document.body.classList.toggle("is-active-panel-dark", ${config.activePanelDark});
 document.body.classList.toggle("is-auto-cycling", ${config.autoCycle});
+document.body.classList.toggle("is-animations-muted", ${config.animationsMuted});
 applyFrameSize(${config.frameSize.level});
 applyFrameInset(${config.cardInset.level});
-applyChatOffset(${config.chatOffset.level});
+applyCarouselSplit(${config.carouselSplit.level});
 
 // Or set directly:
 document.documentElement.style.setProperty("--frame-outer-user", "${config.cssVariables["--frame-outer-user"]}");
 document.documentElement.style.setProperty("--frame-inner-user", "${config.cssVariables["--frame-inner-user"]}");
-document.documentElement.style.setProperty("--llm-chat-offset-y", "${config.cssVariables["--llm-chat-offset-y"]}");`;
+document.documentElement.style.setProperty("--carousel-showcase-share", "${config.cssVariables["--carousel-showcase-share"]}");
+document.documentElement.style.setProperty("--carousel-login-share", "${config.cssVariables["--carousel-login-share"]}");
+document.documentElement.style.setProperty("--carousel-grid-columns", "${config.cssVariables["--carousel-grid-columns"]}");
+document.documentElement.style.setProperty("--carousel-grid-columns-right", "${config.cssVariables["--carousel-grid-columns-right"]}");`;
 
   return `# M3 Login Explorations — copied settings
 
@@ -418,12 +528,14 @@ framed: ${config.framed}
 lightCards: ${config.lightCards}
 activePanelDark: ${config.activePanelDark}
 autoCycle: ${config.autoCycle}
+animationsMuted: ${config.animationsMuted}
 frameSize.level: ${config.frameSize.level}
 frameSize.px: ${config.frameSize.px}
 cardInset.level: ${config.cardInset.level}
 cardInset.px: ${config.cardInset.px}
-chatOffset.level: ${config.chatOffset.level}
-chatOffset.translateY: ${config.chatOffset.translateY}
+carouselSplit.level: ${config.carouselSplit.level}
+carouselSplit.showcaseShare: ${config.carouselSplit.showcaseShare}
+carouselSplit.loginShare: ${config.carouselSplit.loginShare}
 
 ${cssBlock}
 
@@ -463,9 +575,19 @@ function syncAutoCycle(isOn = document.body.classList.contains("is-auto-cycling"
   cyclers.forEach((cycler, approachId) => {
     const approach = document.getElementById(approachId);
     if (!approach?.classList.contains("is-active")) return;
-    if (isOn) cycler.start();
+    if (isOn && !document.body.classList.contains("is-animations-muted")) cycler.start();
     else cycler.stop();
   });
+}
+
+function syncAnimationsMuted(isMuted = document.body.classList.contains("is-animations-muted")) {
+  muteAnimationsToggle?.setAttribute("aria-pressed", String(isMuted));
+  window.M3HeroEngine?.syncAnimationsMuted?.(isMuted);
+  if (isMuted) {
+    cyclers.forEach((cycler) => cycler.stop());
+  } else {
+    syncAutoCycle();
+  }
 }
 
 frameToggle?.addEventListener("click", () => {
@@ -494,12 +616,21 @@ autoCycleToggle?.addEventListener("click", () => {
   syncAutoCycle(isOn);
 });
 
+muteAnimationsToggle?.addEventListener("click", () => {
+  const isMuted = document.body.classList.toggle("is-animations-muted");
+  syncAnimationsMuted(isMuted);
+});
+
 frameSizeSlider?.addEventListener("input", (event) => {
   applyFrameSize(event.target.value);
 });
 
 frameInsetSlider?.addEventListener("input", (event) => {
   applyFrameInset(event.target.value);
+});
+
+carouselSplitSlider?.addEventListener("input", (event) => {
+  applyCarouselSplit(event.target.value);
 });
 
 copyConfigButton?.addEventListener("click", copyExplorationConfig);
@@ -524,13 +655,25 @@ if (DEFAULT_AUTO_CYCLE) {
   autoCycleToggle?.setAttribute("aria-pressed", "true");
 }
 
+if (DEFAULT_ANIMATIONS_MUTED) {
+  document.body.classList.add("is-animations-muted");
+  muteAnimationsToggle?.setAttribute("aria-pressed", "true");
+}
+
 syncFrameControls(DEFAULT_FRAMED);
 syncLightCards(DEFAULT_LIGHT_CARDS);
 syncActivePanelDark(DEFAULT_ACTIVE_PANEL_DARK);
 syncAutoCycle(DEFAULT_AUTO_CYCLE);
+syncAnimationsMuted(DEFAULT_ANIMATIONS_MUTED);
 
 applyFrameSize(frameSizeSlider?.value ?? DEFAULT_FRAME_SIZE_LEVEL);
 applyFrameInset(frameInsetSlider?.value ?? DEFAULT_FRAME_INSET_LEVEL);
-applyChatOffset(DEFAULT_CHAT_OFFSET_LEVEL);
+applyCarouselSplit(carouselSplitSlider?.value ?? DEFAULT_CAROUSEL_SPLIT_LEVEL);
+syncCarouselSplitControls(isCarouselApproach(DEFAULT_APPROACH));
 
 activateApproach(DEFAULT_APPROACH);
+
+const defaultNavButton = document.querySelector(`[data-approach="${DEFAULT_APPROACH}"]`);
+if (defaultNavButton) {
+  updateNavLabel(defaultNavButton.querySelector("strong").textContent);
+}

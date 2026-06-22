@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>M3 Login Explorations</title>
+    <title>M3 login</title>
+    <link rel="icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +26,7 @@
         aria-label="Open layout explorations menu"
       >
         <img src="assets/logo-icon.png" alt="" />
-        <span class="approach-nav-float__current">05 · Accordion · Horizontal · Left</span>
+        <span class="approach-nav-float__current">08 · Carousel · Right</span>
         <span class="approach-nav-float__icon" aria-hidden="true"></span>
       </button>
       <div class="approach-nav-panel" id="approach-nav-panel" aria-hidden="true">
@@ -53,7 +57,7 @@
             </button>
           </li>
           <li>
-            <button class="approach-nav-panel__btn is-active" data-approach="accordion-h-left" type="button">
+            <button class="approach-nav-panel__btn" data-approach="accordion-h-left" type="button">
               <strong>05 · Accordion · Horizontal · Left</strong>
               <small>Login left, horizontal card strips cycle on hover</small>
             </button>
@@ -62,6 +66,18 @@
             <button class="approach-nav-panel__btn" data-approach="accordion-h-right" type="button">
               <strong>06 · Accordion · Horizontal · Right</strong>
               <small>Login right, horizontal card strips cycle on hover</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn" data-approach="carousel-left" type="button">
+              <strong>07 · Carousel · Left</strong>
+              <small>Login left, paginated carousel with prev/next controls</small>
+            </button>
+          </li>
+          <li>
+            <button class="approach-nav-panel__btn is-active" data-approach="carousel-right" type="button">
+              <strong>08 · Carousel · Right</strong>
+              <small>Login right, paginated carousel with prev/next controls</small>
             </button>
           </li>
         </ul>
@@ -95,6 +111,37 @@
               aria-pressed="false"
               aria-label="Toggle automatic panel cycling"
             ></button>
+          </div>
+          <div class="frame-toggle-row mute-animations-toggle-row">
+            <span class="frame-toggle-label">Mute animations</span>
+            <button
+              class="frame-toggle-switch mute-animations-toggle-switch"
+              type="button"
+              aria-pressed="false"
+              aria-label="Toggle animation playback"
+            ></button>
+          </div>
+        </div>
+
+        <hr class="approach-nav-panel__sep carousel-split-controls" />
+        <p class="approach-nav-panel__label carousel-split-controls">Carousel layout</p>
+        <div class="approach-nav-panel__group carousel-split-controls">
+          <div class="frame-inset-row">
+            <label class="frame-toggle-label" for="carousel-split-slider">Showcase width</label>
+            <input
+              id="carousel-split-slider"
+              class="frame-inset-slider"
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              value="5"
+              aria-valuemin="0"
+              aria-valuemax="10"
+              aria-valuenow="5"
+              aria-label="Adjust carousel showcase width relative to login panel"
+            />
+            <span class="carousel-split-value" aria-hidden="true">5</span>
           </div>
         </div>
 
@@ -136,13 +183,13 @@
               min="0"
               max="10"
               step="1"
-              value="4"
+              value="0"
               aria-valuemin="0"
               aria-valuemax="10"
-              aria-valuenow="4"
+              aria-valuenow="0"
               aria-label="Adjust inset around card container"
             />
-            <span class="frame-inset-value" aria-hidden="true">4</span>
+            <span class="frame-inset-value" aria-hidden="true">0</span>
           </div>
         </div>
 
@@ -152,7 +199,7 @@
     </div>
 
     <main class="approach-stage">
-      <section class="approach is-active" id="approach-accordion-left" aria-label="Accordion with login on left">
+      <section class="approach" id="approach-accordion-left" aria-label="Accordion with login on left">
         <div class="login-layout">
           <aside class="login-panel">
             <div class="login-panel__inner">
@@ -305,6 +352,64 @@
           ></div>
         </div>
       </section>
+
+      <section class="approach" id="approach-carousel-left" aria-label="Carousel with login on left">
+        <div class="login-layout login-layout--carousel">
+          <aside class="login-panel">
+            <img class="login-panel__mark" src="assets/m3-mark.png" alt="M3" width="56" height="56" />
+            <div class="login-panel__inner">
+<form>
+                <div class="field">
+                  <label for="cl-email">Username or email</label>
+                  <input id="cl-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="cl-password">Password</label>
+                  <input id="cl-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div
+            class="showcase carousel-showcase"
+            data-cycling=".carousel-slide"
+            data-interval="4500"
+            data-render="carousel"
+          ></div>
+        </div>
+      </section>
+
+      <section class="approach is-active" id="approach-carousel-right" aria-label="Carousel with login on right">
+        <div class="login-layout login-layout--right login-layout--carousel">
+          <aside class="login-panel">
+            <img class="login-panel__mark" src="assets/m3-mark.png" alt="M3" width="56" height="56" />
+            <div class="login-panel__inner">
+<form>
+                <div class="field">
+                  <label for="cr-email">Username or email</label>
+                  <input id="cr-email" type="email" autocomplete="username" placeholder="you@company.com" />
+                </div>
+                <div class="field field--password">
+                  <label for="cr-password">Password</label>
+                  <input id="cr-password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                  <button class="field__toggle" type="button" aria-label="Show password">Show</button>
+                </div>
+                <button class="btn-primary" type="button">Continue</button>
+              </form>
+              <div class="login-panel__footer"><a href="#">Lost your password?</a></div>
+            </div>
+          </aside>
+          <div
+            class="showcase carousel-showcase"
+            data-cycling=".carousel-slide"
+            data-interval="4500"
+            data-render="carousel"
+          ></div>
+        </div>
+      </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.108.0/build/three.min.js"></script>
@@ -314,8 +419,6 @@
     <script src="heroes/m3pixel-globe.js"></script>
     <script src="heroes/m3send-lamp.js"></script>
     <script src="heroes/m3llm-chat.js"></script>
-    <script src="heroes/m3ads-google.js"></script>
-    <script src="heroes/m3marketing-network.js"></script>
     <script src="hero-engine.js"></script>
     <script src="app.js"></script>
   </body>
