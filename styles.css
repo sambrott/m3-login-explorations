@@ -2201,12 +2201,22 @@ body:not(.is-light-cards) .carousel-slide__hero--placeholder {
   background-size: var(--approach-dot-size) var(--approach-dot-size), auto;
 }
 
-.carousel-slide[data-product="ads"] .carousel-slide__bg,
+.carousel-slide[data-product="ads"] .carousel-slide__bg {
+  background:
+    var(--panel-dark-dots),
+    radial-gradient(circle at 72% 18%, rgba(227, 85, 38, 0.14), transparent 38%),
+    radial-gradient(circle at 28% 78%, rgba(227, 85, 38, 0.1), transparent 42%),
+    linear-gradient(145deg, #2f2f31 0%, #141416 100%);
+  background-size: var(--approach-dot-size) var(--approach-dot-size), auto, auto, auto;
+}
+
 .carousel-slide[data-product="llm"] .carousel-slide__bg {
   background:
     var(--panel-dark-dots),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.12), transparent 38%),
+    radial-gradient(circle at 28% 78%, rgba(227, 85, 38, 0.12), transparent 42%),
     linear-gradient(145deg, #2f2f31 0%, #141416 100%);
-  background-size: var(--approach-dot-size) var(--approach-dot-size), auto;
+  background-size: var(--approach-dot-size) var(--approach-dot-size), auto, auto, auto;
 }
 
 .carousel-slide[data-product="marketing"] .carousel-slide__bg {
@@ -2234,12 +2244,22 @@ body.is-light-cards.is-active-panel-dark .carousel-slide.is-active[data-product=
   background-size: var(--approach-dot-size) var(--approach-dot-size), auto;
 }
 
-body.is-light-cards.is-active-panel-dark .carousel-slide.is-active[data-product="ads"] .carousel-slide__bg,
+body.is-light-cards.is-active-panel-dark .carousel-slide.is-active[data-product="ads"] .carousel-slide__bg {
+  background:
+    var(--panel-dark-dots),
+    radial-gradient(circle at 72% 18%, rgba(227, 85, 38, 0.14), transparent 38%),
+    radial-gradient(circle at 28% 78%, rgba(227, 85, 38, 0.1), transparent 42%),
+    linear-gradient(145deg, #2f2f31 0%, #141416 100%);
+  background-size: var(--approach-dot-size) var(--approach-dot-size), auto, auto, auto;
+}
+
 body.is-light-cards.is-active-panel-dark .carousel-slide.is-active[data-product="llm"] .carousel-slide__bg {
   background:
     var(--panel-dark-dots),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.12), transparent 38%),
+    radial-gradient(circle at 28% 78%, rgba(227, 85, 38, 0.12), transparent 42%),
     linear-gradient(145deg, #2f2f31 0%, #141416 100%);
-  background-size: var(--approach-dot-size) var(--approach-dot-size), auto;
+  background-size: var(--approach-dot-size) var(--approach-dot-size), auto, auto, auto;
 }
 
 body.is-light-cards.is-active-panel-dark .carousel-slide.is-active[data-product="marketing"] .carousel-slide__bg {
