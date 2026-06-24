@@ -671,6 +671,9 @@ applyFrameInset(frameInsetSlider?.value ?? DEFAULT_FRAME_INSET_LEVEL);
 applyCarouselSplit(carouselSplitSlider?.value ?? DEFAULT_CAROUSEL_SPLIT_LEVEL);
 syncCarouselSplitControls(isCarouselApproach(DEFAULT_APPROACH));
 
+window.addEventListener("resize", scheduleHeroResize, { passive: true });
+window.addEventListener("orientationchange", scheduleHeroResize, { passive: true });
+
 activateApproach(DEFAULT_APPROACH);
 
 const defaultNavButton = document.querySelector(`[data-approach="${DEFAULT_APPROACH}"]`);
