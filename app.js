@@ -308,14 +308,10 @@ const frameInsetSlider = document.getElementById("frame-inset-slider");
 const frameInsetValue = document.querySelector(".frame-inset-value");
 const carouselSplitSlider = document.getElementById("carousel-split-slider");
 const carouselSplitValue = document.querySelector(".carousel-split-value");
-const uiScaleSlider = document.getElementById("ui-scale-slider");
-const uiScaleValue = document.querySelector(".ui-scale-value");
 const copyConfigButton = document.querySelector(".approach-nav-panel__copy");
 
 const FRAME_OUTER_MAX_PX = 160;
 const FRAME_INSET_MAX_PX = 56;
-const UI_SCALE_MIN = 1;
-const UI_SCALE_MAX = 1.5;
 const DEFAULT_FRAMED = true;
 const DEFAULT_LIGHT_CARDS = true;
 const DEFAULT_ACTIVE_PANEL_DARK = true;
@@ -325,7 +321,6 @@ const DEFAULT_APPROACH = "carousel-right";
 const DEFAULT_FRAME_SIZE_LEVEL = 4;
 const DEFAULT_FRAME_INSET_LEVEL = 0;
 const DEFAULT_CAROUSEL_SPLIT_LEVEL = 5;
-const DEFAULT_UI_SCALE_LEVEL = 5;
 
 function scheduleHeroResize() {
   window.setTimeout(() => {
@@ -404,30 +399,6 @@ function syncCarouselSplitControls(isCarousel = isCarouselApproach()) {
   carouselSplitSlider?.toggleAttribute("disabled", !isCarousel);
 }
 
-function getUiScaleLevel() {
-  return Math.max(0, Math.min(10, Number(uiScaleSlider?.value) || 0));
-}
-
-function getUiScale(level = getUiScaleLevel()) {
-  const resolved = Math.max(0, Math.min(10, Number(level) || 0));
-  const scale = UI_SCALE_MIN + (resolved / 10) * (UI_SCALE_MAX - UI_SCALE_MIN);
-  return Math.round(scale * 1000) / 1000;
-}
-
-function formatUiScalePercent(scale = getUiScale()) {
-  return `${Math.round(scale * 100)}%`;
-}
-
-function applyUiScale(level) {
-  const resolved = Math.max(0, Math.min(10, Number(level) || 0));
-  const scale = getUiScale(resolved);
-
-  document.documentElement.style.setProperty("--ui-scale", String(scale));
-  uiScaleSlider?.setAttribute("aria-valuenow", String(resolved));
-  if (uiScaleValue) uiScaleValue.textContent = formatUiScalePercent(scale);
-  scheduleHeroResize();
-}
-
 async function copyText(text) {
   try {
     await navigator.clipboard.writeText(text);
@@ -463,8 +434,6 @@ function buildExplorationConfig() {
   const insetPx = getFrameInsetPx(insetLevel);
   const carouselSplitLevel = getCarouselSplitLevel();
   const carouselSplit = getCarouselSplitShares(carouselSplitLevel);
-  const uiScaleLevel = getUiScaleLevel();
-  const uiScale = getUiScale(uiScaleLevel);
   const isFramed = document.body.classList.contains("is-framed");
   const lightCards = document.body.classList.contains("is-light-cards");
   const activePanelDark = document.body.classList.contains("is-active-panel-dark");
@@ -496,13 +465,6 @@ function buildExplorationConfig() {
       showcaseShare: carouselSplit.showcaseShare,
       loginShare: carouselSplit.loginShare,
     },
-    uiScale: {
-      level: uiScaleLevel,
-      value: uiScale,
-      percent: formatUiScalePercent(uiScale),
-      min: UI_SCALE_MIN,
-      max: UI_SCALE_MAX,
-    },
     cssVariables: {
       "--frame-outer-user": `${sizePx}px`,
       "--frame-inner-user": `${insetPx}px`,
@@ -510,7 +472,6 @@ function buildExplorationConfig() {
       "--carousel-login-share": `${carouselSplit.loginShare}%`,
       "--carousel-grid-columns": `minmax(0, ${carouselSplit.loginShare}%) minmax(0, ${carouselSplit.showcaseShare}%)`,
       "--carousel-grid-columns-right": `minmax(0, ${carouselSplit.showcaseShare}%) minmax(0, ${carouselSplit.loginShare}%)`,
-      "--ui-scale": String(uiScale),
       "--frame-inner-radius": "1.25rem",
       "--frame-radius": "1.75rem",
       "--approach-dot-size": "10px",
@@ -535,7 +496,6 @@ function formatExplorationConfig(config) {
   --carousel-login-share: ${config.cssVariables["--carousel-login-share"]};
   --carousel-grid-columns: ${config.cssVariables["--carousel-grid-columns"]};
   --carousel-grid-columns-right: ${config.cssVariables["--carousel-grid-columns-right"]};
-  --ui-scale: ${config.cssVariables["--ui-scale"]};
   --frame-inner-radius: ${config.cssVariables["--frame-inner-radius"]};
   --frame-radius: ${config.cssVariables["--frame-radius"]};
   --approach-dot-size: ${config.cssVariables["--approach-dot-size"]};
@@ -551,12 +511,10 @@ document.body.classList.toggle("is-animations-muted", ${config.animationsMuted})
 applyFrameSize(${config.frameSize.level});
 applyFrameInset(${config.cardInset.level});
 applyCarouselSplit(${config.carouselSplit.level});
-applyUiScale(${config.uiScale.level});
 
 // Or set directly:
 document.documentElement.style.setProperty("--frame-outer-user", "${config.cssVariables["--frame-outer-user"]}");
 document.documentElement.style.setProperty("--frame-inner-user", "${config.cssVariables["--frame-inner-user"]}");
-document.documentElement.style.setProperty("--ui-scale", "${config.cssVariables["--ui-scale"]}");
 document.documentElement.style.setProperty("--carousel-showcase-share", "${config.cssVariables["--carousel-showcase-share"]}");
 document.documentElement.style.setProperty("--carousel-login-share", "${config.cssVariables["--carousel-login-share"]}");
 document.documentElement.style.setProperty("--carousel-grid-columns", "${config.cssVariables["--carousel-grid-columns"]}");
@@ -578,9 +536,6 @@ cardInset.px: ${config.cardInset.px}
 carouselSplit.level: ${config.carouselSplit.level}
 carouselSplit.showcaseShare: ${config.carouselSplit.showcaseShare}
 carouselSplit.loginShare: ${config.carouselSplit.loginShare}
-uiScale.level: ${config.uiScale.level}
-uiScale.value: ${config.uiScale.value}
-uiScale.percent: ${config.uiScale.percent}
 
 ${cssBlock}
 
@@ -678,10 +633,6 @@ carouselSplitSlider?.addEventListener("input", (event) => {
   applyCarouselSplit(event.target.value);
 });
 
-uiScaleSlider?.addEventListener("input", (event) => {
-  applyUiScale(event.target.value);
-});
-
 copyConfigButton?.addEventListener("click", copyExplorationConfig);
 
 if (DEFAULT_FRAMED) {
@@ -718,7 +669,6 @@ syncAnimationsMuted(DEFAULT_ANIMATIONS_MUTED);
 applyFrameSize(frameSizeSlider?.value ?? DEFAULT_FRAME_SIZE_LEVEL);
 applyFrameInset(frameInsetSlider?.value ?? DEFAULT_FRAME_INSET_LEVEL);
 applyCarouselSplit(carouselSplitSlider?.value ?? DEFAULT_CAROUSEL_SPLIT_LEVEL);
-applyUiScale(uiScaleSlider?.value ?? DEFAULT_UI_SCALE_LEVEL);
 syncCarouselSplitControls(isCarouselApproach(DEFAULT_APPROACH));
 
 window.addEventListener("resize", scheduleHeroResize, { passive: true });
