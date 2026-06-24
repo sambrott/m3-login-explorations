@@ -48,6 +48,7 @@
   --content-enter-duration: 0.42s;
   --content-exit-duration: 0.22s;
   --content-hover-expand-wait: 0.46s;
+  --ui-scale: 1.25;
 }
 
 *,
@@ -67,6 +68,13 @@ body {
   color: var(--color-black);
   background: var(--color-grey-100);
   -webkit-font-smoothing: antialiased;
+  zoom: var(--ui-scale);
+}
+
+@supports not (zoom: 1) {
+  html {
+    font-size: calc(100% * var(--ui-scale));
+  }
 }
 
 button,
@@ -314,13 +322,19 @@ body.is-framed .frame-inset-row {
 }
 
 .frame-inset-value,
-.frame-size-value {
+.frame-size-value,
+.ui-scale-value,
+.carousel-split-value {
   min-width: 1.1rem;
   color: var(--color-white);
   font-family: var(--font-heading);
   font-size: 0.72rem;
   font-weight: 700;
   text-align: right;
+}
+
+.ui-scale-value {
+  min-width: 2.35rem;
 }
 
 .approach-nav-panel__copy {
@@ -2807,6 +2821,16 @@ body.is-framed .accordion-showcase--horizontal .accordion-panel:not(.is-active)[
 /* ─────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 960px) {
+  body {
+    zoom: 1;
+  }
+
+  @supports not (zoom: 1) {
+    html {
+      font-size: 100%;
+    }
+  }
+
   .approach-stage {
     min-height: 100dvh;
   }
